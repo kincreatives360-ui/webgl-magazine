@@ -17,7 +17,7 @@ void main() {
 
     vec2 atlasUV = vec2(
         mix(xStart, xEnd, vUv.x),
-        mix(yStart, yEnd, (1.0 - vUv.y) * 1.5)
+        mix(yStart, yEnd, 1.0 - vUv.y)
     ); 
 
     vec4 blurryTexel = texture2D(uBlurryAtlas, atlasUV);

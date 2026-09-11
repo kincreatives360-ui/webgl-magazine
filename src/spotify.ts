@@ -59,7 +59,8 @@ export default class SpotifyVisualiser {
     this.group = new THREE.Group()
     this.scene.add(this.group)
 
-    this.geometry = new THREE.PlaneGeometry(1, 1)
+    // 628 x 1070 aspect ratio (width 1.0, height 1.703)
+    this.geometry = new THREE.PlaneGeometry(1, 1.703)
 
     this.createMaterial()
     this.createInstancedMesh()
