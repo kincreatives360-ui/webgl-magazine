@@ -15,20 +15,43 @@ class App {
     this.scroll = new Scroll()
     this.canvas = new Canvas({ scroll: this.scroll })
 
-    // const pages = $$("[data-page]")
-    // let currentPageIndex = 0
-    // const container = $("[data-pages-container]")
-
-    // document.addEventListener("click", (e) => {
-    //   pages[currentPageIndex].style.setProperty("--turn-page", "1")
-    //   currentPageIndex++
-    //   container.style.setProperty(
-    //     "--data-current-page-index",
-    //     currentPageIndex.toString()
-    //   )
-    // })
+    this.setupModeSwitcher()
 
     this.render()
+  }
+
+  setupModeSwitcher() {
+    const btnMagazine = document.getElementById("btn-magazine")
+    const btnVortex = document.getElementById("btn-vortex")
+    const btnSpotify = document.getElementById("btn-spotify")
+
+    const buttons: Record<string, HTMLElement | null> = {
+      magazine: btnMagazine,
+      vortex: btnVortex,
+      spotify: btnSpotify,
+    }
+
+    const activeClasses = ["bg-amber-50", "text-neutral-950", "shadow-sm"]
+    const inactiveClasses = ["text-neutral-400", "hover:text-neutral-200", "hover:bg-neutral-800/50"]
+
+    const setActive = (mode: "magazine" | "vortex" | "spotify") => {
+      Object.entries(buttons).forEach(([key, btn]) => {
+        if (!btn) return
+        if (key === mode) {
+          btn.classList.add(...activeClasses)
+          btn.classList.remove(...inactiveClasses)
+        } else {
+          btn.classList.add(...inactiveClasses)
+          btn.classList.remove(...activeClasses)
+        }
+      })
+
+      this.canvas.switchMode(mode)
+    }
+
+    btnMagazine?.addEventListener("click", () => setActive("magazine"))
+    btnVortex?.addEventListener("click", () => setActive("vortex"))
+    btnSpotify?.addEventListener("click", () => setActive("spotify"))
   }
 
   render() {

@@ -6,6 +6,8 @@ import Scroll from "./scroll"
 import gsap from "gsap"
 import { $ } from "./utils/dom"
 import Magazine from "./magazine"
+import VortexGallery from "./vortex"
+import SpotifyVisualiser from "./spotify"
 import normalizeWheel from "normalize-wheel"
 
 interface Props {
@@ -28,6 +30,9 @@ export default class Canvas {
   scroll: Scroll
   mediaInfoBlock: HTMLDivElement
   magazine: Magazine
+  vortex: VortexGallery
+  spotify: SpotifyVisualiser
+  activeMode: "magazine" | "vortex" | "spotify" = "magazine"
 
   constructor({ scroll }: Props) {
     this.scroll = scroll
@@ -46,6 +51,8 @@ export default class Canvas {
     this.addEventListeners()
     this.createDebug()
     this.createMagazine()
+    this.createVortex()
+    this.createSpotify()
     //this.createHelpers()
 
     this.debug.hide()
@@ -91,6 +98,31 @@ export default class Canvas {
       debug: this.debug,
       sizes: this.sizes,
     })
+  }
+
+  createVortex() {
+    this.vortex = new VortexGallery({
+      scene: this.scene,
+      cameraZ: this.camera.position.z,
+    })
+    // Start with vortex hidden by default
+    this.vortex.setVisible(false)
+  }
+
+  createSpotify() {
+    this.spotify = new SpotifyVisualiser({
+      scene: this.scene,
+      sizes: this.sizes,
+    })
+    // Start with spotify hidden by default
+    this.spotify.setVisible(false)
+  }
+
+  switchMode(mode: "magazine" | "vortex" | "spotify") {
+    this.activeMode = mode
+    this.magazine?.setVisible(mode === "magazine")
+    this.vortex?.setVisible(mode === "vortex")
+    this.spotify?.setVisible(mode === "spotify")
   }
 
   createRenderer() {
@@ -173,5 +205,7 @@ export default class Canvas {
 
     this.renderer.render(this.scene, this.camera)
     this.magazine?.render()
+    this.vortex?.render(this.time)
+    this.spotify?.render(0.016)
   }
 }

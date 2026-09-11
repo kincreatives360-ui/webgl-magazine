@@ -1,0 +1,6 @@
+{
+  "name": "WebGL Magazine",
+  "description": "An interactive 3D WebGL magazine and visual portfolio showcase powered by Three.js and GSAP.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

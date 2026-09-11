@@ -47,6 +47,12 @@ export default class Magazine {
   imageInfos: ImageInfo[] = []
   atlasTexture: THREE.Texture | null = null
 
+  // Autoplay properties
+  isAutoplay: boolean = false
+  autoplaySpeed: number = 0.012
+  isVisible: boolean = true
+  group: THREE.Group
+
   // Touch handling properties
   touch: {
     startX: number
@@ -58,6 +64,8 @@ export default class Magazine {
     this.scene = scene
     this.debug = debug
     this.sizes = sizes
+    this.group = new THREE.Group()
+    this.scene.add(this.group)
 
     this.pageDimensions = {
       width: 2,
@@ -165,8 +173,7 @@ export default class Magazine {
       )
 
       anim.call(() => {
-        window.addEventListener("wheel", this.onWheel.bind(this))
-        this.addTouchListeners()
+        this.isAutoplay = true
       })
     })
   }
@@ -391,7 +398,12 @@ export default class Magazine {
       new THREE.InstancedBufferAttribute(aIndex, 1)
     )
 
-    this.scene.add(this.instancedMesh)
+    this.group.add(this.instancedMesh)
+  }
+
+  setVisible(visible: boolean) {
+    this.isVisible = visible
+    this.group.visible = visible
   }
 
   onResize(sizes: Size) {
@@ -405,7 +417,13 @@ export default class Magazine {
   }
 
   render() {
+    if (!this.isVisible) return
     if (this.material) {
+      if (this.isAutoplay) {
+        this.scrollY.target += this.autoplaySpeed
+        this.material.uniforms.uSpeedY.value += this.autoplaySpeed * 2
+      }
+
       this.scrollY.current = gsap.utils.interpolate(
         this.scrollY.current,
         this.scrollY.target,
